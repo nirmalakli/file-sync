@@ -1,0 +1,13 @@
+1) Sync-configuration file:
+File-Sync application should be able to read sync-configuration meta-data file. Sync config file contains entries of mappings of source patterns vs destination patterns.
+These patterns are hierarchical patterns. 
+
+e.g.
+/home/nirmal/Documents -> /media/hdd-ntfs/nirmal/pc/Documents
+/home/nirmal/Documents/Personal/Wife -> /media/hdd-ntfs/pooja/pc/Documents
+/home/nirmal/Videos/Movies -> /media/hdd-ntfs/nirmal/Videos/Movies
+
+Tasks:
+a) A Metadata class to represent this configuration.
+b) A class which accepts a source path and returns a mapping for it. 
+
