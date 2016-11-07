@@ -1,0 +1,3 @@
+/home/nirmal/Documents -> /media/hdd-ntfs/nirmal/pc/Documents
+/home/nirmal/Documents/Personal/Wife -> /media/hdd-ntfs/pooja/pc/Documents
+/home/nirmal/Videos/Movies -> /media/hdd-ntfs/nirmal/Videos/Movies
