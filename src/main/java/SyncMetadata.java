@@ -2,18 +2,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public final class SyncMetadata {
 
 	private String syncFilePath;
-	private Map<String, String> configs;
+	private SyncConfigs configs;
 
 	private SyncMetadata(String filePath) {
 		this.syncFilePath = filePath;
-		this.configs = new HashMap<>();
 		load();
 	}
 	
@@ -23,6 +22,7 @@ public final class SyncMetadata {
 			throw new IllegalArgumentException("Could not locate sync-settings file: " + syncFilePath);
 		}
 		
+		List<SyncConfig> syncConfigs = new ArrayList<>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		String line = null;
 		
@@ -32,11 +32,13 @@ public final class SyncMetadata {
 				if(tokens.length != 2) {
 					throw new RuntimeException("Incorrect format at line: " + line + "\nCorrect format is 'srcPath -> destnPath'. ");
 				}
-				configs.put(tokens[0].trim(), tokens[1].trim());
+				syncConfigs.add(new SyncConfig(tokens[0].trim(), tokens[1].trim()));
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Could not read sync-settings file: " + syncFilePath + ". Error is: ", e);
 		}
+
+		this.configs = new SyncConfigs(syncConfigs);
 	}
 
 	public static SyncMetadata load(String path) {
@@ -44,11 +46,17 @@ public final class SyncMetadata {
 	}
 
 	public boolean isPresent(String src) {
-		return configs.keySet().contains(src);
+		return configs.isPresent(src);
 	}
 
 	public Optional<String> getDestination(String src) {
-		return isPresent(src) ? Optional.of(configs.get(src)) : Optional.empty();
+		
+		Optional<SyncConfig> syncConfig = configs.get(src);
+		if(syncConfig.isPresent()) {
+			return Optional.of(syncConfig.get().destination());
+		} else {
+			return Optional.empty();
+		}
 	}
 
 }
