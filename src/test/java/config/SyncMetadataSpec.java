@@ -34,20 +34,4 @@ public class SyncMetadataSpec {
 		SyncMetadata metadata = SyncMetadata.load("sync-settings.txt");
 		assertFalse(metadata.isPresent("/home/nirmal"));
 	}
-	
-	@Test
-	public void getDestinationForADirectSource() {
-		SyncMetadata metadata = SyncMetadata.load("sync-settings.txt");
-		Optional<String> destination = metadata.getDestination("/home/nirmal/Documents");
-		assertTrue("Destination mapping for '/home/nirmal/Documents' should be present", destination.isPresent());
-		assertEquals("/media/hdd-ntfs/nirmal/pc/Documents", destination.get());
-	}
-	
-	@Test
-	public void getDestinationForAnIndirectSource() {
-		SyncMetadata metadata = SyncMetadata.load("sync-settings.txt");
-		Optional<String> destination = metadata.getDestination("/home/nirmal/Documents/Official");
-		assertTrue("Destination mapping for '/home/nirmal/Documents/Official' should be present", destination.isPresent());
-		assertEquals("/media/hdd-ntfs/nirmal", destination.get());
-	}
 }

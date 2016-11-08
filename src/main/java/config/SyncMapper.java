@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 public class SyncMapper {
 
-	Node tree;
+	private final Node tree;
 	
 	public SyncMapper() {
 		tree = new Node();
@@ -29,7 +29,6 @@ public class SyncMapper {
 				
 				// If parent is marked
 				if(parent.marked || parent.markInheritedFrom != null) {
-					child.marked = false;
 					child.markInheritedFrom = parent.marked ? parent : parent.markInheritedFrom;
 					child.parentMarked = true;
 				}
@@ -82,7 +81,6 @@ public class SyncMapper {
 		return Optional.empty();
 	}
 
-
 	public static SyncMapper create(SyncMetadata metadata) {
 		SyncMapper syncMapper = new SyncMapper();
 		for(SyncConfig config : metadata.configs() ) {
@@ -90,5 +88,8 @@ public class SyncMapper {
 		}
 		return syncMapper;
 	}
-
+	
+	public Node root() {
+		return tree;
+	}
 }
