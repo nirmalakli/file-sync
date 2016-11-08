@@ -1,4 +1,7 @@
+package config;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -18,6 +21,7 @@ public class NodeSpec {
 		root = Node.newNode("/", "Root", null, null);
 		home = Node.newNode("home", "Home", root, null);
 		nirmal = Node.newNode("nirmal", "Nirmal", home, null);
+		nirmal.marked=true;
 	}
 
 	void add(Node parent, Node child) {
@@ -57,6 +61,32 @@ public class NodeSpec {
 		assertEquals(nirmal.key, result.get().key);
 		assertEquals(nirmal.value, result.get().value);
 	}
-
-
+	
+	@Test
+	public void path() {
+		Node nirmal = Node.search(home, "nirmal").get();
+		assertEquals("/home/nirmal", nirmal.path());
+	}	
+	
+	@Test
+	public void closestMarkedNodeForATerminalNode() {
+		Optional<Node> result = Node.closestMarkedNode(root, "/home/nirmal");
+		assertTrue(result.isPresent());
+		Node nirmal = result.get();
+		assertEquals("/home/nirmal", nirmal.path());
+	}
+	
+	@Test
+	public void closestMarkedNodeForANodeOutsideTree() {
+		Optional<Node> result = Node.closestMarkedNode(root, "/home/nirmal/file1.jpg");
+		assertTrue(result.isPresent());
+		Node file1 = result.get();
+		assertEquals("/home/nirmal", file1.path());
+	}	
+	
+	@Test
+	public void noClosestMarkedNode() {
+		Optional<Node> result = Node.closestMarkedNode(root, "/home");
+		assertFalse(result.isPresent());
+	}
 }

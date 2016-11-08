@@ -1,3 +1,5 @@
+package config;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -138,6 +140,13 @@ public class SyncMapperSpec {
 			assertTrue(result.isPresent());
 			String destination = result.get();
 			assertEquals("/media/pc/shared/Movies/English", destination);
+		}
+		
+		{
+			Optional<String> result = syncMapper.destination("/home/nirmal/Videos/Movies/English/Godfather.avi");
+			assertTrue(result.isPresent());
+			String destination = result.get();
+			assertEquals("/media/pc/shared/Movies/English/Godfather.avi", destination);
 		}
 		
 	}

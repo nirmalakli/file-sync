@@ -1,8 +1,11 @@
+package config;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +47,10 @@ public final class SyncMetadata {
 	public static SyncMetadata load(String path) {
 		return new SyncMetadata(path);
 	}
+	
+	public Collection<SyncConfig> configs() {
+		return configs.configs();
+	}
 
 	public boolean isPresent(String src) {
 		return configs.isPresent(src);
@@ -57,6 +64,11 @@ public final class SyncMetadata {
 		} else {
 			return Optional.empty();
 		}
+	}
+	
+	@Override
+	public String toString() {		
+		return configs == null? null : configs.toString();
 	}
 
 }
