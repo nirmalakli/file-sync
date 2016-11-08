@@ -11,3 +11,7 @@ Tasks:
 a) A Metadata class to represent this configuration.
 b) A class which accepts a source path and returns a mapping for it. 
 
+2) Functionality which looks at config file and generates a collection of create/amend operations to be done.
+
+3) Functionality to apply the collection of operations.
+

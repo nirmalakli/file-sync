@@ -23,7 +23,7 @@ public class SyncMapper {
 		List<String> dirs =  Stream.of(source.split("/")).filter(dir -> !dir.isEmpty()).collect(Collectors.toList());
 		Node node = tree;
 		for(String dir : dirs) {
-			Optional<Node> result = Node.get(node, dir);
+			Optional<Node> result = Node.search(node, dir);
 			if(!result.isPresent()) {
 				Node parent = node;
 				Node child = Node.newNode(dir, null, parent, null);
@@ -43,10 +43,35 @@ public class SyncMapper {
 		node.marked = true;
 		node.parentMarked = false;
 		node.markInheritedFrom = null;
+		
+		
+		inheritMarks(tree);
 	}
 	
-	public Optional<String> get(String srcPath) {
-		Optional<Node> result = Node.get(tree, srcPath);
+	private void inheritMarks(Node node) {
+
+		boolean isMarked = node.marked || node.parentMarked;
+		
+		for(Node child : node.children) {
+			boolean isChildMarked = child.marked || child.parentMarked;
+			
+			if(isMarked && !isChildMarked) {
+				child.parentMarked = true;
+				if(node.marked) {
+					child.markInheritedFrom = node;
+				} else {
+					child.markInheritedFrom = node.markInheritedFrom;
+				}
+			}
+			
+			inheritMarks(child);
+		}
+		
+	}
+
+
+	public Optional<String> destination(String srcPath) {
+		Optional<Node> result = Node.search(tree, srcPath);
 		if(result.isPresent()) {
 			Node node = result.get();
 			if(node.marked) {
@@ -110,7 +135,7 @@ class Node {
 	}
 	
 	
-	static Optional<Node> get(Node root, String searchPath) {
+	static Optional<Node> search(Node root, String searchPath) {
 		Node search = root;
 		List<String> dirs =  Stream.of(searchPath.split("/")).filter(dir -> !dir.isEmpty()).collect(Collectors.toList());
 		boolean found = true;

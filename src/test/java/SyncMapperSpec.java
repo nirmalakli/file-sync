@@ -1,9 +1,11 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SyncMapperSpec {
@@ -15,7 +17,7 @@ public class SyncMapperSpec {
 		syncMapper.add(new SyncConfig("/home/nirmal/Videos", "/media/pc/nirmal/Videos"));
 		
 		{
-			Optional<Node> result = Node.get(syncMapper.tree, "/home");
+			Optional<Node> result = Node.search(syncMapper.tree, "/home");
 			assertTrue(result.isPresent());
 			assertEquals(result.get().key, "home");
 			assertNull(result.get().value);
@@ -25,7 +27,7 @@ public class SyncMapperSpec {
 		}
 		
 		{
-			Optional<Node> result = Node.get(syncMapper.tree, "/home/nirmal");
+			Optional<Node> result = Node.search(syncMapper.tree, "/home/nirmal");
 			assertTrue(result.isPresent());
 			assertEquals(result.get().key, "nirmal");
 			assertNull(result.get().value);
@@ -35,7 +37,7 @@ public class SyncMapperSpec {
 		}
 		
 		{
-			Optional<Node> result = Node.get(syncMapper.tree, "/home/nirmal/Videos");
+			Optional<Node> result = Node.search(syncMapper.tree, "/home/nirmal/Videos");
 			assertTrue(result.isPresent());
 			assertEquals(result.get().key, "Videos");
 			assertEquals(result.get().value, "/media/pc/nirmal/Videos");
@@ -48,11 +50,11 @@ public class SyncMapperSpec {
 	@Test
 	public void twoConfigsOnAStraightLine() {
 		SyncMapper syncMapper = new SyncMapper();
-		syncMapper.add(new SyncConfig("/home/nirmal/Videos", "/media/pc/nirmal/Videos"));
 		syncMapper.add(new SyncConfig("/home/nirmal/Videos/Movies/English", "/media/pc/shared/Movies/English"));
+		syncMapper.add(new SyncConfig("/home/nirmal/Videos", "/media/pc/nirmal/Videos"));
 		
 		{
-			Optional<Node> result = Node.get(syncMapper.tree, "/home");
+			Optional<Node> result = Node.search(syncMapper.tree, "/home");
 			assertTrue(result.isPresent());
 			assertEquals(result.get().key, "home");
 			assertNull(result.get().value);
@@ -62,7 +64,7 @@ public class SyncMapperSpec {
 		}
 		
 		{
-			Optional<Node> result = Node.get(syncMapper.tree, "/home/nirmal");
+			Optional<Node> result = Node.search(syncMapper.tree, "/home/nirmal");
 			assertTrue(result.isPresent());
 			assertEquals(result.get().key, "nirmal");
 			assertNull(result.get().value);
@@ -72,7 +74,7 @@ public class SyncMapperSpec {
 		}
 		
 		{
-			Optional<Node> result = Node.get(syncMapper.tree, "/home/nirmal/Videos");
+			Optional<Node> result = Node.search(syncMapper.tree, "/home/nirmal/Videos");
 			assertTrue(result.isPresent());
 			assertEquals(result.get().key, "Videos");
 			assertEquals(result.get().value, "/media/pc/nirmal/Videos");
@@ -82,7 +84,7 @@ public class SyncMapperSpec {
 		}
 		
 		{
-			Optional<Node> result = Node.get(syncMapper.tree, "/home/nirmal/Videos/Movies");
+			Optional<Node> result = Node.search(syncMapper.tree, "/home/nirmal/Videos/Movies");
 			assertTrue(result.isPresent());
 			assertEquals(result.get().key, "Movies");
 			assertNull(result.get().value);
@@ -94,7 +96,7 @@ public class SyncMapperSpec {
 		
 		
 		{
-			Optional<Node> result = Node.get(syncMapper.tree, "/home/nirmal/Videos/Movies/English");
+			Optional<Node> result = Node.search(syncMapper.tree, "/home/nirmal/Videos/Movies/English");
 			assertTrue(result.isPresent());
 			assertEquals(result.get().key, "English");
 			assertEquals("/media/pc/shared/Movies/English", result.get().value);
@@ -105,27 +107,38 @@ public class SyncMapperSpec {
 	}
 	
 	@Test
-	public void get() {
+	public void destinationSearching() {
 		
 		SyncMapper syncMapper = new SyncMapper();
-		syncMapper.add(new SyncConfig("/home/nirmal/Videos", "/media/pc/nirmal/Videos"));
 		syncMapper.add(new SyncConfig("/home/nirmal/Videos/Movies/English", "/media/pc/shared/Movies/English"));
+		syncMapper.add(new SyncConfig("/home/nirmal/Videos", "/media/pc/nirmal/Videos"));
+		
 		
 		{
-			Optional<String> result = syncMapper.get("/home/nirmal/Videos");
+			Optional<String> result = syncMapper.destination("/home/nirmal");
+			assertFalse(result.isPresent());
+		}
+		
+		{
+			Optional<String> result = syncMapper.destination("/home/nirmal/Videos");
 			assertTrue(result.isPresent());
 			String destination = result.get();
 			assertEquals("/media/pc/nirmal/Videos", destination);
 		}
 		
 		{
-			Optional<String> result = syncMapper.get("/home/nirmal/Videos/Movies");
+			Optional<String> result = syncMapper.destination("/home/nirmal/Videos/Movies");
 			assertTrue(result.isPresent());
 			String destination = result.get();
 			assertEquals("/media/pc/nirmal/Videos/Movies", destination);
 		}
 		
-		
+		{
+			Optional<String> result = syncMapper.destination("/home/nirmal/Videos/Movies/English");
+			assertTrue(result.isPresent());
+			String destination = result.get();
+			assertEquals("/media/pc/shared/Movies/English", destination);
+		}
 		
 	}
 
