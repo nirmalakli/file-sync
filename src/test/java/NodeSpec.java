@@ -27,32 +27,32 @@ public class NodeSpec {
 	}
 	
 	@Test
-	public void getWorksForRootNode() {
-		Optional<Node> result = Node.get(root, "/");
+	public void searchForRootNode() {
+		Optional<Node> result = Node.search(root, "/");
 		assertTrue(result.isPresent());
 		assertEquals("/", result.get().key);
 		assertEquals("Root", result.get().value);
 	}
 
 	@Test
-	public void getWorksForTerminalNode() {
-		Optional<Node> result = Node.get(root, "/home/nirmal");
+	public void searchForTerminalNode() {
+		Optional<Node> result = Node.search(root, "/home/nirmal");
 		assertTrue(result.isPresent());
 		assertEquals(nirmal.key, result.get().key);
 		assertEquals(nirmal.value, result.get().value);
 	}
 	
 	@Test
-	public void getWorksForIntermediateNode() {
-		Optional<Node> result = Node.get(root, "/home");
+	public void searchForIntermediateNode() {
+		Optional<Node> result = Node.search(root, "/home");
 		assertTrue(result.isPresent());
 		assertEquals(home.key, result.get().key);
 		assertEquals(home.value, result.get().value);
 	}	
 	
 	@Test
-	public void getWorksFromIntermediateNode() {
-		Optional<Node> result = Node.get(home, "nirmal");
+	public void searchFromIntermediateNode() {
+		Optional<Node> result = Node.search(home, "nirmal");
 		assertTrue(result.isPresent());
 		assertEquals(nirmal.key, result.get().key);
 		assertEquals(nirmal.value, result.get().value);
