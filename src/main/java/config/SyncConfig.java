@@ -1,3 +1,4 @@
+package config;
 
 public class SyncConfig {
 	private final String src;
@@ -14,5 +15,10 @@ public class SyncConfig {
 	
 	public String destination() {
 		return destn;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s -> %s", src, destn);
 	}
 }
