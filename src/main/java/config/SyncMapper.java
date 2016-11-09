@@ -18,6 +18,7 @@ public class SyncMapper {
 	
 	
 	public void add(SyncConfig config) {
+		System.out.println("Adding config:: " + config);
 		String source = config.source();
 		List<String> dirs =  Stream.of(source.split("/")).filter(dir -> !dir.isEmpty()).collect(Collectors.toList());
 		Node node = tree;
