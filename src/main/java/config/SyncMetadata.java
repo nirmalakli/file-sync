@@ -55,16 +55,6 @@ public final class SyncMetadata {
 	public boolean isPresent(String src) {
 		return configs.isPresent(src);
 	}
-
-	public Optional<String> getDestination(String src) {
-		
-		Optional<SyncConfig> syncConfig = configs.get(src);
-		if(syncConfig.isPresent()) {
-			return Optional.of(syncConfig.get().destination());
-		} else {
-			return Optional.empty();
-		}
-	}
 	
 	@Override
 	public String toString() {		
