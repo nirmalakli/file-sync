@@ -29,15 +29,6 @@ public class SyncConfigs {
 	public boolean isPresent(String src) {
 		return configs.stream().map(SyncConfig::source).anyMatch(checkSrc -> checkSrc.equals(src));
 	}
-
-	public Optional<SyncConfig> get(String src) {
-		
-		if(isPresent(src)) {
-			return configs.stream().filter(config -> Objects.equals(config.source(), src)).findAny();
-		} 
-		
-		return Optional.empty();
-	}
 	
 	public Collection<SyncConfig> configs() {
 		return configs;
