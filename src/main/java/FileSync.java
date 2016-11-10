@@ -47,6 +47,18 @@ public class FileSync {
 		SyncCommand syncOperation = new SyncCommand(operation, syncSourcePath, destination);
 		return Optional.of(syncOperation);
 	}
+
+	public List<SyncResponse> execute(List<SyncCommand> operations) {
+		
+		return operations.stream()
+			.map(this::fetchResponse)
+			.collect(Collectors.toList());
+	}
+
+	private SyncResponse fetchResponse(SyncCommand command) {
+		
+		return fileService.execute(command);
+	}
 }
 
 class SyncCommand {
@@ -80,7 +92,7 @@ class SyncCommand {
 
 	@Override
 	public String toString() {
-		return String.format("SyncOperation [operation=%s, sourcePath=%s, destinationPath=%s]", operation, sourcePath,
+		return String.format("SyncCommand [operation=%s, sourcePath=%s, destinationPath=%s]", operation, sourcePath,
 				destinationPath);
 	}
 
@@ -117,6 +129,33 @@ class SyncCommand {
 			return false;
 		return true;
 	}
-	
-	
 }
+
+class SyncResponse {
+	private final SyncCommand command;
+	private final boolean status;
+	private final String error;
+	
+	public SyncResponse(SyncCommand command, boolean status, String error) {
+		this.command = command;
+		this.status = status;
+		this.error = error;
+	}
+	
+	public boolean success() {
+		return status;
+	}
+	
+	public boolean failed() {
+		return !success();
+	}
+	
+	public String errorMessage() {
+		return error;
+	}
+	
+	public SyncCommand command() {
+		return command;
+	}
+}
+

@@ -1,4 +1,4 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +26,13 @@ public class FileSyncSpec {
 			@Override
 			public boolean exists(String path) {
 				return path.contains("pdf");
+			}
+
+			@Override
+			public SyncResponse execute(SyncCommand command) {
+				boolean status = command.sourcePath().contains("pdf");
+				String error = status ? "Success" : "Failure";
+				return new SyncResponse(command, status, error);
 			}
 		};
 		fileSync = new FileSync(SyncMetadata.load("sync-settings.txt"), mockFileService);
@@ -55,6 +62,21 @@ public class FileSyncSpec {
 		assertEquals(SyncCommand.Operation.CREATE, command.operation());
 		assertEquals("/media/hdd-ntfs/nirmal/Videos/Movies/English/Godfather.avi", command.destinationPath());
 	}
+	
+	@Test
+	public void execute() {
+		
+		List<SyncCommand> operations = fileSync.sync("/home/nirmal");
+		List<SyncResponse> result = fileSync.execute(operations);
+		
+		assertEquals(String.format("There should be %d sync responses ", operations.size()),  operations.size(), result.size());
+		
+		SyncCommand command = pickCommand(operations, "/home/nirmal/Documents/1.pdf");	
+		SyncResponse response1 = pickResponse(result, command);
+		assertNotNull(response1);
+		assertTrue("Response should be successfull", response1.success());
+		assertEquals("Response should be successfull", "Success", response1.errorMessage());
+	}
 
 
 	private SyncCommand pickCommand(List<SyncCommand> operations, String sourcePath) {
@@ -64,4 +86,10 @@ public class FileSyncSpec {
 				.orElseThrow(() -> new RuntimeException("Could not find command for sourcePath = '" + sourcePath + "'"));
 	}
 
+	private SyncResponse pickResponse(List<SyncResponse> result, SyncCommand command) {
+		return result.stream()
+				.filter(r -> Objects.equals(command, r.command()))
+				.findAny()
+				.orElseThrow(() -> new RuntimeException("Could not find response for " + command));
+	}
 }
