@@ -15,7 +15,8 @@ public class LocalFileService implements FileService {
 			System.err.println("File : " + path + " does not exists!!");
 			return Stream.empty();
 		}
-		return Stream.of(file.list());
+		return Stream.of(file.listFiles())
+			.map(File::getAbsolutePath);
 	}
 
 	@Override
