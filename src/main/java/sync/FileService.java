@@ -1,3 +1,5 @@
+package sync;
+
 import java.util.stream.Stream;
 
 public interface FileService {
