@@ -1,0 +1,27 @@
+[2016-11-18]
+
+config
+    - SyncConfig
+    - SyncConfigs
+    - SyncMetadata
+    - SyncMapper
+
+sync
+    - FileSync
+    - FileService
+    - LocalFileService
+
+FileSync
+    - fileService : FileService
+
+    - sync(path: String) : List<SyncCommand>
+    - execute(commands: List<SyncCommand>) : List<SyncResponse>
+
+FileService
+    - fetch(path: String) : Stream<String>
+    - exists(path: String) : boolean
+    - execute(command: SyncCommand) : SyncResponse
+
+Refactoring:
+
+    -

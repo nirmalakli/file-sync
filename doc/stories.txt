@@ -15,3 +15,5 @@ b) A class which accepts a source path and returns a mapping for it.
 
 3) Functionality to apply the collection of operations.
 
+4) Functionality to cache the results of sync operations.
+

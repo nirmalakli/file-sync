@@ -19,7 +19,7 @@ public class FileSyncSpec {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		mockFileService = new FileService() {
-			
+
 			@Override
 			public Stream<String> fetch(String path) {
 				return Stream.of("/home/nirmal/Documents/1.pdf", "/home/nirmal/Documents/Personal/Wife/2.pdf", "/home/nirmal/Videos/Movies/English/Godfather.avi");
